@@ -137,12 +137,39 @@ public:
     return (double)count/m_size;
   }    
   void rehash(){
-     Node** temp = new Node* [m_size*2];
-     for(int i=0;i<m_size;i++){
-        
-     }   
+    int new_size = m_size * 2;
+     Node** temp = new Node* [new_size];
+     for (int i = 0;i < new_size;i++) {
+        temp[i] = nullptr;  
+     }
+        for (int i = 0; i < m_size; ++i) {
+        Node* t = table[i];
+        while (t) {
+            int index = hash_function(t->key);
+            Node* new_node = new Node(t->key, t->value);
+            new_node->next = temp[index];
+            temp[index] = new_node;
 
-
+            t = t->next;
+        }
+    }  
+        for(int i = 0;i < m_size;i++){
+        if (table[i] != nullptr ){
+            Node* temp1 = table[i];
+            Node* temp2 = temp1->next;
+            while( temp2 != nullptr ){
+                delete temp1;
+                temp1 = temp2;
+                temp2 = temp2->next;
+            }
+            delete temp1;
+            
+         }
+        }
+         delete []table;
+     
+     table = temp;
+     m_size = new_size;
   } 
 };
 int main(){
