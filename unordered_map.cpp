@@ -11,9 +11,10 @@ class Unordered_map {
         Node(const Keys& k, const Values& v) : key{k}, value{v}, next{nullptr} {}
     };
 
-    static const int m_size = 13;
-    Node* table[m_size];
+    int m_size = 13;
+    Node** table;
     int count = 0;
+    static constexpr double max_load_factor=1.0;
 
     int hash_function(Keys value) {
         std::hash<Keys> hashs;
@@ -24,6 +25,7 @@ class Unordered_map {
 
 public:
     Unordered_map() {
+        table = new Node*[m_size];
         for (int i = 0; i < m_size; i++) {
             table[i] = nullptr;
         }
@@ -117,4 +119,46 @@ public:
         }
         return nullptr;
     }
+ bool contains(Keys keys){
+    int index=hash_function(keys);
+    if (table[index] == nullptr) {
+         return false;
+    }
+    Node* ptr = table[index];
+    while (ptr != nullptr){
+        if (ptr->key == keys) {
+            return true;
+        }
+    }
+    return false;
+
+ }   
+  float load_factor()const {
+    return (double)count/m_size;
+  }    
+  void rehash(){
+     Node** temp = new Node* [m_size*2];
+     for(int i=0;i<m_size;i++){
+        
+     }   
+
+
+  } 
 };
+int main(){
+ Unordered_map<int,string> maps;
+ maps.insert(12,"hello");
+ maps.insert(14,"help");
+ maps.erase(15);
+ cout<<maps.contains(12)<<endl;
+}
+
+
+
+
+
+
+
+
+
+
