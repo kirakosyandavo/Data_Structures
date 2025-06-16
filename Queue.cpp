@@ -5,52 +5,54 @@ using namespace std;
 template<typename T>
 class Queue {
 private:
-    list<T> list;
+    list<T> _data;
 
 public:
-    Queue(initializer_list<T> list) {
-        for (const T& val : list) {
-            list.push_back(val);
+    Queue(initializer_list<T> _data) {
+        for (const T& val : _data) {
+            _data.push_back(val);
         }
     }
 
-    Queue& operator=(Queue& other) {
-        list = other.list;
+   Queue& operator=(const Queue& other) {
+    if (this != &other) {
+        _data = other._data;
     }
-
+    return *this;
+}
     T& front() {
-        if (list.empty()) {
-            throw runtime_error("queue is empty");
-        }
-        return list.front();
+    if (_data.empty()) throw runtime_error("queue is empty");
+    return _data.front();
+}
+const T& front() const {
+    if (_data.empty()) throw runtime_error("queue is empty");
+    return _data.front();
+}
+
+T& back() {
+    if (_data.empty()) throw runtime_error("queue is empty");
+    return _data.back();
+}
+const T& back() const {
+    if (_data.empty()) throw runtime_error("queue is empty");
+    return _data.back();
+}
+
+    bool empty()const noexcept {
+        return _data.empty();
     }
 
-    T& back() {
-        if (list.is_empty()) {
-            throw runtime_error("queue is empty");
-        }
-        return list.back();
+    int size()const noexcept {
+        return _data.size();
     }
 
-    bool empty() {
-        return list.empty();
-    }
+void enqueue(const T& value) {
+    _data.push_back(value);
+}
 
-    int size() {
-        return list.size();
-    }
-
-    void dequeue() {
-        if (data.empty()) {
-            throw runtime_error("queue is empty");
-        }
-        list.push_back();
-    }
-
-    void enqueue(const T& value) {
-        if (data.empty()) {
-            throw runtime_error("queue is empty");
-        }
-        list.pop_front();
-    }
+void dequeue() {
+    if (_data.empty())
+        throw runtime_error("queue is empty");
+    _data.pop_front();
+}
 };
