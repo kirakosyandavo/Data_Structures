@@ -4,6 +4,7 @@ using namespace std;
 
 template <typename T>
 class My_Custom_Allocator {
+    public:
     using value = T;
 
     template <typename U>
@@ -103,35 +104,34 @@ public:
         ++count;
     }
 
-    bool erase(const Keys& keys) {
-        int index = hash_function(keys, m_size);
-        if (table[index] == nullptr) {
-            return false;
-        }
-
-        Node* curr = table[index];
-        if (curr->key == keys) {
-            table[index] = curr->next;
-            delete curr;
-            --count;
-            return true;
-        }
-
-        Node* prev = nullptr;
-        while (curr != nullptr && curr->key != keys) {
-            prev = curr;
-            curr = curr->next;
-        }
-
-        if (curr == nullptr) {
-            return false;
-        }
-
-        prev->next = curr->next;
-        delete curr;
-        --count;
-        return true;
+    bool erase(const Keys& key) {
+    int idx = hash_function(key);
+    Node* prev = nullptr;
+    for (Node* cur = table[idx]; cur; prev = cur, cur = cur->next) {
+    if (cur->key == key) {
+    if (prev) prev->next = cur->next;
+    else  table[idx] = cur->next;
+    delete cur;
+    --count;
+    return true;
     }
+  }
+  return false;
+}
+ Values& operator[](Keys& key){
+    int index = hash_function(key);
+    Node*ptr = table[index];
+    if (ptr == nullptr ){
+        throw out_of_range("out");    
+    }
+    while (ptr != nullptr){
+        if (ptr->key == key){
+            return ptr->value;
+        }
+        ptr = ptr->next;
+    }
+    throw out_of_range("out");
+ }
 
     bool empty()const noexcept {
         return count == 0;
@@ -153,6 +153,7 @@ public:
         }
         count = 0;
     }
+
 
     Node* find(Keys keys) {
         int index = hash_function(keys, m_size);
@@ -199,11 +200,14 @@ public:
   delete[] old_tab;
 }
 
-        
-
     ~Unordered_map() {
         clear();
         delete[] table;
     }
 };
+int main(){
+ Unordered_map<int,int>map;
 
+ 
+
+}
