@@ -8,11 +8,9 @@ private:
     list<T> _data;
 
 public:
-    Queue(initializer_list<T> _data) {
-        for (const T& val : _data) {
-            _data.push_back(val);
-        }
-    }
+    Queue(std::initializer_list<T> init)
+  : _data(init.begin(), init.end())
+    {}
 
    Queue& operator=(const Queue& other) {
     if (this != &other) {

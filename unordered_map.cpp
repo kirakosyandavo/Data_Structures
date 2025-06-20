@@ -66,7 +66,8 @@ class Unordered_map {
 
 public:
     using NodeAlloc = typename Alloc::template rebind<Node>::other;
-
+     Unordered_map(const Unordered_map&) = delete;
+     Unordered_map& operator=(const Unordered_map&) = delete;
     Unordered_map() {
         table = new Node*[m_size];
         for (int i = 0; i < m_size; ++i) {
@@ -75,7 +76,7 @@ public:
         count = 0;
     }
 
-    void insert(Keys keys, Values values) {
+    void insert(const Keys& keys, const Values& values) {
         if (load_factor() >= max_load_factor) {
             rehash();
         }
@@ -132,11 +133,11 @@ public:
         return true;
     }
 
-    bool empty() {
+    bool empty()const noexcept {
         return count == 0;
     }
 
-    int size() {
+    int size()const noexcept {
         return count;
     }
 
@@ -167,57 +168,38 @@ public:
         return nullptr;
     }
 
-    bool contains(Keys keys) {
-        int index = hash_function(keys, m_size);
-        Node* ptr = table[index];
-
-        while (ptr != nullptr) {
-            if (ptr->key == keys) {
-                return true;
-            }
-            ptr = ptr->next;
-        }
-
-        return false;
+   bool contains(const Keys& k) const {
+    int idx = hash_function(k);
+    for (Node* p = table[idx]; p; p = p->next) {
+        if (p->key == k) return true;
     }
+    return false;
+}
 
-    float load_factor() const {
+    float load_factor() const noexcept{
         return static_cast<float>(count) / m_size;
     }
 
     void rehash() {
         cout << "called rehash" << endl;
-        int new_size = m_size * 2;
-        Node** new_table = new Node*[new_size];
-
-        for (int i = 0; i < new_size; ++i) {
-            new_table[i] = nullptr;
-        }
-
-        for (int i = 0; i < m_size; ++i) {
-            Node* t = table[i];
-            while (t) {
-                int index = hash_function(t->key, new_size);
-                Node* new_node = new Node(t->key, t->value);
-                new_node->next = new_table[index];
-                new_table[index] = new_node;
-                t = t->next;
-            }
-        }
-
-        for (int i = 0; i < m_size; ++i) {
-            Node* curr = table[i];
-            while (curr) {
-                Node* nxt = curr->next;
-                delete curr;
-                curr = nxt;
-            }
-        }
-
-        delete[] table;
-        table = new_table;
-        m_size = new_size;
+       int old_n = m_size;
+       Node** old_tab = table;
+       m_size *= 2;
+       table = new Node*[m_size]();
+       count = 0;
+ 
+  for (int i = 0; i < old_n; ++i) {
+    for (Node* p = old_tab[i]; p; ) {
+      insert(p->key, p->value);
+      Node* nxt = p->next;
+      delete p;
+      p = nxt;
     }
+  }
+  delete[] old_tab;
+}
+
+        
 
     ~Unordered_map() {
         clear();
