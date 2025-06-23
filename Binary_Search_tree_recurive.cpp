@@ -2,7 +2,7 @@
 using namespace std;
 template <typename T>
 class BST{
-class TreeNode{
+struct TreeNode{
   T value;
   TreeNode* left;
   TreeNode* right;
@@ -15,14 +15,14 @@ void Inorder_traversal(TreeNode* node){
     return;
    }
    Inorder_traversal(node->left);
-   cout<<node->value;
+   cout<<node->value<<" ";
    Inorder_traversal(node->right);
 }
 void Preorder_traversal(TreeNode* node){
   if(node==nullptr){
     return;
    }
-   cout<<node->value;
+   cout<<node->value<<" ";
    Preorder_traversal(node->left);
    Preorder_traversal(node->right);
 }
@@ -31,12 +31,12 @@ void Postorder_traversal(TreeNode* node){
     return;
    }
    Postorder_traversal(node->left);
-   Postorder_traversal(Node->right);
-   cout<<node->value;
+   Postorder_traversal(node->right);
+   cout<<node->value<<" ";
 }
 TreeNode* helper_insert(TreeNode* node, T values){
-   if(node=nullptr){
-        node=new TreeNode(value);
+   if(node==nullptr){
+        node=new TreeNode(values);
         return node;
    }
   if(node->value > values){
@@ -78,30 +78,50 @@ TreeNode* helper_deletion(TreeNode* node,T values){
          return node;
    }
    if(node->value<values){
-    
+       node->right=helper_deletion(node->right,values);
    }
+   if(node->value>values){
+    node->left=helper_deletion(node->left,values);
+   }
+   if(node->value==values){
+    if(node->left==nullptr){
+       TreeNode* temp=node->right;
+        delete node;
+        return temp;
+    }
+    if(node->right==nullptr){
+      TreeNode*temp=node->left;
+      delete node;
+      return temp;
+    }
+    TreeNode*ptr=find_successor(node->right);
+    node->value=ptr->value;
+    node->right=helper_deletion(node->right,ptr->value);
+
+   }
+   return node;
 }
 public:
 BST(){root=nullptr;}
-TreeNode* insert( T values){
-  return helper_insert(root,values);
+ void insert( T values){
+     root=helper_insert(root,values);
 }
 bool find(T values){
     return find_helper(root,values);
 }
-TreeNode* delete( T values){
-  return helper_deletion(root,values);
+    TreeNode* deletion( T values){
+   root=helper_deletion(root,values);
+   return root;
 }
+void print_inorder(){
+  Inorder_traversal(root);
+}
+void print_preorder(){
+  Preorder_traversal(root);
+}
+void print_postorder(){
+  Postorder_traversal(root);
+}
+};
 
     
-
-
-
-
-
-
-
-
-
-
-};
