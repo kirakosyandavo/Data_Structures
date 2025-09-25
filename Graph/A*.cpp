@@ -4,12 +4,12 @@
 #include <cstdlib>
 #include <climits>
 using namespace std;
-int h(int x,int y,int x1,int y1){
+int h(int x,int y,int x1,int y1) {
     return abs(x-x1)+abs(y-y1);
 }
 
 vector<pair<int,int>>directions{{-1,0},{1,0},{0,1},{0,-1}};
-int find_small_path(vector<vector<int>>&grid,pair<int,int>start,pair<int,int>end){
+int find_small_path(vector<vector<int>>&grid,pair<int,int>start,pair<int,int>end) {
    int  end_x = end.first;
     int end_y = end.second;
     int n = grid.size();
@@ -18,7 +18,7 @@ int find_small_path(vector<vector<int>>&grid,pair<int,int>start,pair<int,int>end
     distance[start.first][start.second] = 0;
     priority_queue<pair<int,pair<int,int>>, vector<pair<int,pair<int,int>>>, greater<>>ques;
     ques.push({0,start});
-    while(!ques.empty()){
+    while(!ques.empty()) {
      auto [dist,current] = ques.top();
      int x = current.first;
       int y = current.second;
@@ -27,7 +27,7 @@ int find_small_path(vector<vector<int>>&grid,pair<int,int>start,pair<int,int>end
         continue;
      }
      if(current == end){
-        return distance[x][y];     ///////x== i y==j
+        return distance[x][y];     ///////x == i y == j
      } 
      for(auto[move_x,move_y]:directions){
         int temp_distance = distance[x][y]+1;
