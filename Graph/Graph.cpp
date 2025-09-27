@@ -5,6 +5,7 @@
 #include<stack>
 #include<queue>
 #include<list>
+#include <algorithm>
 using namespace std;
 // is for undirected;
 class Graph{
@@ -249,7 +250,7 @@ visited[node] = true;
 return false;
 }
 
-bool has_cycle(){ //directed
+bool has_cycle_d(){ //directed
 vector<bool>OnStack(graph.size(),false);
 vector<bool>visited(graph.size(),false);
 for(int i=0;i<graph.size();i++){
@@ -429,6 +430,95 @@ return result;
 
 }
 //////END TARJAN
+
+bool has_eulerian_path() { // for undirected
+ int count = 0;   
+for(int  i =0;i<graph.size(); i++){
+  if(graph[i].size()%2 ==1){
+    count ++;
+  }
+}
+ return count == 2;
+}
+
+bool has_eulerian_cycle(){// for undirected
+    for(int i=0;i<graph.size();i++){
+        if(graph[i].size() % 2 != 0){
+            return false;
+        }
+    }
+    return true;
+}
+
+bool has_eulerian_path_dir() { // for directed
+ std::vector<int>outdegree(graph.size(),0);
+ std::vector<int>indegree(graph.size(),0);
+ for(int i = 0;i < graph.size();i++) {
+   for(int vertex:graph[i]){
+    outdegree[i]++;
+    indegree[vertex]++;
+   }
+ }
+
+ int start = -1;int end = -1;
+ for (int i = 0; i < graph.size(); i++) {
+        if (outdegree[i] - indegree[i] == 1) {
+            start++;
+        } else if (indegree[i] - outdegree[i] == 1) {
+            end++;
+        } else if (indegree[i] != outdegree[i]) {
+            return false; 
+        }
+    }
+    return (start == 1 && end == 1);
+}
+
+bool has_eulerian_cycle_dir() {// for undirected
+    std::vector<int>outdegree(graph.size(),0);
+ std::vector<int>indegree(graph.size(),0);
+ for(int i = 0;i < graph.size();i++) {
+   for(int vertex:graph[i]){
+    outdegree[i]++;
+    indegree[vertex]++;
+   }
+ }
+
+ for (int i = 0; i < graph.size(); i++) {
+         if (indegree[i] != outdegree[i]) {
+            return false; 
+        }
+ }
+    return true;
+}
+
+
+void helper_path_undirected(int start_node, std::vector<int>& result) {
+    while (!graph[start_node].empty()) {
+        int vertex = graph[start_node].back();
+        graph[start_node].pop_back();
+
+        //auto it = std::find(graph[vertex].begin(), graph[vertex].end(), start_node);
+    //if (it != graph[vertex].end()) {
+      //      graph[vertex].erase(it);
+        //}
+
+        helper_path_undirected(vertex, result);
+    }
+    result.push_back(start_node);
+}
+
+std::vector<int> reconstruct_path_for_eulerian_undirected(int start_node, std::vector<std::vector<int>> graph) {
+    std::vector<int> result;
+    helper_path_undirected(start_node, result);
+    std::reverse(result.begin(), result.end());
+    return result;
+}
+
+
+
+
+
+
 
 
 
